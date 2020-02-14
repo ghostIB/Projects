@@ -1,48 +1,32 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp56
+namespace ConsoleApp59
 {
-    class Tree
+    class Tree<T> where T:IComparable
     {
-        public Node rootNode { get; }
-        public Tree(Node inputRootNode)
+        public Node<T> rootNode { get; }
+        public Tree(T inputRootNode)
         {
-            rootNode = inputRootNode;
+            rootNode = new Node<T>(inputRootNode);
         }
-        public Node left;
-        public Node right;
+        public Node<T> left;
+        public Node<T> right;
         private int countNode = 1;
         private bool resultSearchRight = true;
         private bool resultSearchLeft = true;
-        public void AddNode(Node inputNode)
+        public void AddNode(T inputNode)
         {
-            if (inputNode.left != null)
-            {
-                this.AddNode(inputNode.left);
-            }
-            this.rootNode.AddValue(inputNode.value);
+            rootNode.AddValue(inputNode);
             countNode++;
-            if (inputNode.right != null)
-            {
-                this.AddNode(inputNode.right);
-            }
         }
-        public bool SearchNode(Node inputRawNode)
+        public bool SearchNode(T inputRawNode)
         {
-            if (inputRawNode.left != null)
-            {
-                resultSearchLeft = this.SearchNode(inputRawNode.left);
-            }
-            if (inputRawNode.right != null)
-            {
-                resultSearchRight = this.SearchNode(inputRawNode.right);
-            }
-            if (resultSearchLeft && resultSearchRight == false) return false;
-            return this.rootNode.SearchValue(inputRawNode.value);
+            return rootNode.SearchValue(inputRawNode);
         }
         public void GetSortedTree()
         {
@@ -53,9 +37,12 @@ namespace ConsoleApp56
         {
             return countNode;
         }
-        public override string ToString()
+        public IEnumerator GetEnumerator()
         {
-            return $"{this.rootNode.value}";
+            foreach (var elem in rootNode)
+            {
+                yield return elem;
+            }
         }
     }
 }
