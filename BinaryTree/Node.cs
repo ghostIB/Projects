@@ -1,30 +1,31 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp56
+namespace ConsoleApp59
 {
-    class Node
+    class Node<T> where T:IComparable
     {
-        public int value { get; }
-        public Node left;
-        public Node right;
+        public T value { get; }
+        public Node<T> left;
+        public Node<T> right;
         private int count = 1;
         private bool resultRight, resultLeft;
-        public Node(int inputValue)
+        public Node(T inputValue)
         {
             this.value = inputValue;
         }
-        public void AddValue(int nodeValue)
+        public void AddValue(T nodeValue)
         {
             count++;
-            if (nodeValue <= value)
+            if (nodeValue.CompareTo(value)<=0)
             {
                 if (left == null)
                 {
-                    left = new Node(nodeValue);
+                    left = new Node<T>(nodeValue);
                 }
                 else
                 {
@@ -35,7 +36,7 @@ namespace ConsoleApp56
             {
                 if (right == null)
                 {
-                    right = new Node(nodeValue);
+                    right = new Node<T>(nodeValue);
                 }
                 else
                 {
@@ -43,9 +44,9 @@ namespace ConsoleApp56
                 }
             }
         }
-        public bool SearchValue(int searchedNode)
+        public bool SearchValue(T searchedNode)
         {
-            if (searchedNode == value) return true;
+            if (searchedNode.CompareTo(value)==0) return true;
             else
             {
                 resultLeft = left == null ? false : left.SearchValue(searchedNode);
@@ -59,14 +60,28 @@ namespace ConsoleApp56
             Console.Write(value.ToString() + " ");
             if (right != null) right.GetSortedList();
         }
-        public bool CheckNodes(int checkedValue)
-        {
-            return right.value == checkedValue || left.value == checkedValue;
-        }
         public int CountNodes() { return count; }
         public override string ToString()
         {
             return $"{value}";
+        }
+        public IEnumerator GetEnumerator()
+        {
+            if (this.left != null)
+            {
+                foreach (var v in left)
+                {
+                    yield return v;
+                }
+            }
+            yield return value;
+            if (this.right != null)
+            {
+                foreach (var v in right)
+                {
+                    yield return v;
+                }
+            }
         }
     }
 }
