@@ -10,7 +10,7 @@ namespace ConsoleApp3
     {
         static void Main(string[] args)
         {
-            LongNumber a =LongNumber.Convert("354164577471651846517841614864164864845848") + LongNumber.Convert("45468546418416858418418741684984167471474");
+            LongNumber a =LongNumber.Convert("99") + LongNumber.Convert("1");
             a.Show();
             Console.ReadKey();
         }
@@ -77,7 +77,7 @@ namespace ConsoleApp3
             List<byte> resultList = new List<byte>();
             if (second==new LongNumber(0) || first== new LongNumber(0)) return first==new LongNumber(0) ? second:first;
             int tmp = first.Length >= second.Length ? first.Length : second.Length;
-            for (int i=0;i<tmp; i++)
+            for (int i=0;i<tmp+1; i++)
             {
                 if (i>second.Length-1)
                 {
@@ -145,6 +145,10 @@ namespace ConsoleApp3
                 if (numeral != 0) resultList.Add((byte)(numeral));
             }
             return new LongNumber(resultList);
+        }
+        public static LongNumber operator +(LongNumber first, int second)
+        {
+            return first + new LongNumber(second);
         }
         public static bool operator >(LongNumber first, LongNumber second)
         {
