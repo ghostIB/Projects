@@ -10,7 +10,7 @@ namespace ConsoleApp3
     {
         static void Main(string[] args)
         {
-            LongNumber a =LongNumber.Convert("99") + LongNumber.Convert("1");
+            LongNumber a = LongNumber.Convert("46846168486464512") * LongNumber.Convert("464135187475");
             a.Show();
             Console.ReadKey();
         }
@@ -64,10 +64,6 @@ namespace ConsoleApp3
             resultList.Reverse();
             return new LongNumber(resultList);
         }
-        public static explicit operator List<byte>(LongNumber obj)
-        {
-            return obj.Number;
-        }
         public static LongNumber operator +(LongNumber first,LongNumber second)
         {
             byte result1=0;
@@ -96,7 +92,8 @@ namespace ConsoleApp3
                     result1 = first.Number[i];
                 }
                 numeral = (byte)(result1 + result2 + brain);
-                if (numeral !=0) resultList.Add((byte)(numeral%10));
+                if (numeral == 0) return new LongNumber(resultList);
+                resultList.Add((byte)(numeral%10));
                 brain = (byte)((numeral) / 10);
             }
             return new LongNumber(resultList);
@@ -142,13 +139,64 @@ namespace ConsoleApp3
                 {
                     minus = false;
                 }
-                if (numeral != 0) resultList.Add((byte)(numeral));
+                if (numeral == 0) return new LongNumber(resultList);
+                resultList.Add((byte)(numeral));
             }
             return new LongNumber(resultList);
         }
         public static LongNumber operator +(LongNumber first, int second)
         {
             return first + new LongNumber(second);
+        }
+        public static LongNumber operator -(LongNumber first, int second)
+        {
+            return first - new LongNumber(second);
+        }
+        public static LongNumber operator *(LongNumber first,LongNumber second)
+        {
+            byte brain = 0;
+            LongNumber shorter = first.Length <= second.Length ? first : second;
+            LongNumber longer = first.Length > second.Length ? first : second;
+            List<List<long>> sums = new List<List<long>>();
+            byte tmp = 0;
+            List<int> finalSums= new List<int>();
+            List<byte> result = new List<byte>();
+            string str;
+            for (int i=0;i<shorter.Length;i++)
+            {
+                sums.Add(new List<long>());
+                for (int j=0;j<longer.Length;j++)
+                {
+                    sums[i].Add(shorter.Number[i] * longer.Number[j]);
+                }
+            }
+            for (int i=0;i<longer.Length+shorter.Length;i++)
+            {
+                finalSums.Add(0);
+            }
+            for (int i = 0; i < longer.Length; i++)
+            {
+                for (int j = 0; j < shorter.Length; j++)
+                {
+                    finalSums[j+i]+=(int) sums[j][i];
+                }
+            }
+            for (int i=0;i<finalSums.Count;i++)
+            {
+                tmp = (byte)((finalSums[i]+brain) / 10);
+                str = (finalSums[i] + brain).ToString();
+                finalSums[i] = int.Parse(str[str.Length-1]+"");
+                brain = tmp;
+            }
+            if (finalSums[finalSums.Count-1]==0)
+            {
+                finalSums.RemoveAt(finalSums.Count - 1);
+            }
+            for (int i=0;i<finalSums.Count;i++)
+            {
+                result.Add((byte)finalSums[i]);
+            }
+            return new LongNumber(result);
         }
         public static bool operator >(LongNumber first, LongNumber second)
         {
